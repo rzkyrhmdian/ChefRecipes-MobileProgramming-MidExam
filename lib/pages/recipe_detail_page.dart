@@ -31,6 +31,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   }
 
   Future<void> _openEditPage() async {
+    final userId = _authService.currentUser?.uid;
+    if (userId == null || _recipe.userId != userId) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Only recipe owner can edit this recipe.')),
+      );
+      return;
+    }
+
     final changed = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
@@ -47,6 +56,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   }
 
   Future<void> _deleteRecipe() async {
+    final userId = _authService.currentUser?.uid;
+    if (userId == null || _recipe.userId != userId) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Only recipe owner can delete this recipe.')),
+      );
+      return;
+    }
+
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -78,6 +96,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   @override
   Widget build(BuildContext context) {
     final userId = _authService.currentUser?.uid;
+    final isOwner = userId != null && _recipe.userId == userId;
 
     return Scaffold(
       appBar: AppBar(
@@ -105,14 +124,16 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 );
               },
             ),
-          IconButton(
-            onPressed: _openEditPage,
-            icon: const Icon(Icons.edit),
-          ),
-          IconButton(
-            onPressed: _deleteRecipe,
-            icon: const Icon(Icons.delete),
-          ),
+          if (isOwner)
+            IconButton(
+              onPressed: _openEditPage,
+              icon: const Icon(Icons.edit),
+            ),
+          if (isOwner)
+            IconButton(
+              onPressed: _deleteRecipe,
+              icon: const Icon(Icons.delete),
+            ),
         ],
       ),
       body: SingleChildScrollView(

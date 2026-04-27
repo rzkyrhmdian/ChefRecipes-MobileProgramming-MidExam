@@ -30,6 +30,13 @@ class DbService {
         .map((snapshot) => snapshot.docs.map(Recipe.fromFirestore).toList());
   }
 
+  Stream<List<Recipe>> getAllRecipes() {
+    return _recipesRef
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map(Recipe.fromFirestore).toList());
+  }
+
   Future<Recipe?> getRecipeById(String recipeId) async {
     final doc = await _recipesRef.doc(recipeId).get();
     if (!doc.exists) return null;

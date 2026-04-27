@@ -121,13 +121,13 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 16),
             const Text(
-              'My Recipes',
+              'All Recipes',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Expanded(
               child: StreamBuilder<List<Recipe>>(
-                stream: _dbService.getRecipesByUserId(user?.uid ?? ''),
+                stream: _dbService.getAllRecipes(),
                 builder: (context, snapshot) {
                   if (user == null) {
                     return const Center(child: Text('Please login first.'));
@@ -154,6 +154,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: recipes.length,
                     itemBuilder: (context, index) {
                       final recipe = recipes[index];
+                      final isOwner = recipe.userId == user.uid;
                       return Card(
                         child: ListTile(
                           onTap: () => _openDetailRecipe(recipe),
@@ -197,14 +198,16 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                               ),
-                              IconButton(
-                                onPressed: () => _openEditRecipe(recipe),
-                                icon: const Icon(Icons.edit),
-                              ),
-                              IconButton(
-                                onPressed: () => _deleteRecipe(recipe),
-                                icon: const Icon(Icons.delete),
-                              ),
+                              if (isOwner) ...[
+                                IconButton(
+                                  onPressed: () => _openEditRecipe(recipe),
+                                  icon: const Icon(Icons.edit),
+                                ),
+                                IconButton(
+                                  onPressed: () => _deleteRecipe(recipe),
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ],
                             ],
                           ),
                         ),
