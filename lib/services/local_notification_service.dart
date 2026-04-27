@@ -42,11 +42,9 @@ class LocalNotificationService {
     }
   }
 
-  /// Use this method to detect when the user taps on a notification or action button
+  /// To detect when the user taps on a notification or action button
   @pragma("vm:entry-point")
   static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
-    // Tapping automatically opens the app by default for AwesomeNotifications.
-    // If you need custom navigation: MyApp.navigatorKey.currentState?.pushNamed('/some-page');
   }
 
   Future<void> showInstantTestNotification() async {
@@ -61,27 +59,19 @@ class LocalNotificationService {
     );
   }
 
-  Future<void> scheduleReminderAfterSeconds(int seconds) async {
-    // For specific seconds scheduling
+  Future<void> showRecipeUploadedNotification(String recipeTitle) async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 1002,
+        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
         channelKey: 'chef_recipes_channel',
-        title: 'Chef Recipes Reminder',
-        body: 'Check today’s Chef Recipes ideas!',
+        title: 'Recipe Uploaded!',
+        body: '"$recipeTitle" has been successfully saved.',
         notificationLayout: NotificationLayout.Default,
-      ),
-      schedule: NotificationInterval(
-        interval: Duration(seconds: seconds),
-        timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
-        repeats: false,
       ),
     );
   }
 
   Future<void> scheduleDailyReminder() async {
-    // We can fulfill the requested daily reminder texts:
-    // Request string: "Don't forget dinner prep at 5 PM"
     
     // Morning reminder at 08:00
     await _scheduleForHour(

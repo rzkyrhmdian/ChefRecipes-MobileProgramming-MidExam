@@ -4,6 +4,7 @@ import '../models/recipe.dart';
 import '../services/auth_service.dart';
 import '../services/db_service.dart';
 import '../services/imgbb_service.dart';
+import '../services/local_notification_service.dart';
 import '../widgets/safe_network_image.dart';
 
 class AddRecipePage extends StatefulWidget {
@@ -115,6 +116,9 @@ class _AddRecipePageState extends State<AddRecipePage> {
       );
 
       await _dbService.createRecipe(recipe);
+      await LocalNotificationService.instance.showRecipeUploadedNotification(
+        recipe.title,
+      );
       if (!mounted) return;
       Navigator.pop(context, true);
     } catch (e) {

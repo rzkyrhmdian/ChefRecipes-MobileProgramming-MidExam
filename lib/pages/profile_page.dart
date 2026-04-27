@@ -44,20 +44,6 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 8),
             ElevatedButton.icon(
               onPressed: () async {
-                await notificationService.scheduleReminderAfterSeconds(10);
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Reminder scheduled in 10 seconds.'),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.schedule),
-              label: const Text('Schedule Reminder (10 Seconds)'),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () async {
                 await notificationService.scheduleDailyReminder();
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
